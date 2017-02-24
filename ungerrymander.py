@@ -4,9 +4,9 @@ import random
 df = pd.read_csv('data/data.csv')
 
 no_of_experiments = 100
-no_of_randomized_counties = 10
-min_population_factor = 0.9
-max_population_factor = 1.1
+no_of_randomized_counties = 3
+min_population_factor = 0.95
+max_population_factor = 1.05
 
 
 
