@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_excel('raw.xlsx')
+df = pd.read_excel('data/raw.xlsx')
 
 all_new_neighbors = []
 for index, row in df.iterrows():
@@ -20,4 +20,4 @@ df['neighbors'] = all_new_neighbors
 df.drop(['neighbor'], axis = 1, inplace = True, errors = 'ignore')
 df.drop(['C_Number'], axis = 1, inplace = True, errors = 'ignore')
 
-df.to_csv('test_data.csv', index = False)
+df.to_csv('data/test_data.csv', index = False)
