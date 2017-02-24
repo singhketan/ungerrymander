@@ -3,8 +3,8 @@ import random
 
 df = pd.read_csv('data/data.csv')
 
-no_of_experiments = 100
-no_of_randomized_counties = 3
+no_of_experiments = 500
+max_random_counties = 20
 min_population_factor = 0.95
 max_population_factor = 1.05
 
@@ -63,6 +63,7 @@ max_population = max_population_factor * max(original_populations)
 
 	
 for i in range(no_of_experiments):
+	no_of_randomized_counties = random.randint(0, max_random_counties)
 	current_trial_df = last_good_df.copy()
 	random_rows = current_trial_df.sample(n = no_of_randomized_counties)
 
@@ -73,10 +74,9 @@ for i in range(no_of_experiments):
 		current_district = row['district']
 		if current_county_id not in counties_done:
 			counties_done.append(current_county_id)
-			shuffled_neighbors = row['neighbors'].split(",")
-			for neighbor in shuffled_neighbors:
+			for neighbor in row['neighbors'].split(","):
 				
-				if neighbor != "":
+				if neighbor != "" and (int(neighbor) not in counties_done):
 					county_row = current_trial_df[current_trial_df.county_id == int(neighbor)]
 					
 					if(current_district != county_row['district'].item()):
@@ -98,6 +98,7 @@ for i in range(no_of_experiments):
 			last_good_eg = current_eg
 			print "--------"
 			print "New best Efficiency Gap: ", current_eg
+			print no_of_randomized_counties, " counties randomized."
 	else:
 		print "------------"
 		print "Populations inconsistent - Skipping configuration."
