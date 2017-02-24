@@ -3,14 +3,14 @@ import random
 
 df = pd.read_csv('data.csv')
 
-no_of_experiments = 10
-no_of_randomized_counties = 5
+no_of_experiments = 20
+no_of_randomized_counties = 20
 min_population_factor = 0.9
 max_population_factor = 1.1
 
-random_rows = df.sample(n = no_of_randomized_counties)
 
-last_df = df
+
+last_df = df.copy()
 
 
 def getPopulations(current_trial_df):
@@ -19,7 +19,7 @@ def getPopulations(current_trial_df):
 	all_reps = []
 	results = []
 	for district in current_trial_df['district'].unique():
-		district_rows = df[df.district == district]
+		district_rows = current_trial_df[current_trial_df.district == district]
 		total_reps = (district_rows['rep']).sum()
 		total_dems = (district_rows['dem']).sum()
 		all_dems.append(total_dems)
@@ -70,24 +70,29 @@ max_population = max_population_factor * max(original_populations)
 
 	
 for i in range(no_of_experiments):
-	current_trial_df = last_df
+	current_trial_df = last_df.copy()
+	random_rows = current_trial_df.sample(n = no_of_randomized_counties)
+
 	#The following starts after each omega test.
 	counties_done = []
 	for index, row in random_rows.iterrows():
-		county_id = row['county_id']
+		current_county_id = row['county_id']
 		current_district = row['district']
-		if county_id not in counties_done:
-			counties_done.append(county_id)
+		if current_county_id not in counties_done:
+			counties_done.append(current_county_id)
 			shuffled_neighbors = row['neighbors'].split(",")
 			for neighbor in shuffled_neighbors:
+				
 				if neighbor != "":
-					county_row = df[df.county_id == int(neighbor)]
+					county_row = current_trial_df[current_trial_df.county_id == int(neighbor)]
+					
 					if(current_district != county_row['district'].item()):
-						current_trial_df.set_value(county_row.index, 'district', county_row['district'])
+						current_trial_df = current_trial_df.set_value(county_row.index, 'district', current_district)
 						counties_done.append(int(neighbor))
+						break
 		else:
 			#We'll skip this iteration if the counties has already been manipulated
 			continue
-	
+
 	checkConsistency(current_trial_df, min_population, max_population)
-	# ifOmegaIncrease = 
+	#update the last_df if consistent and gap decrease
