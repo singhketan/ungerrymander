@@ -1,7 +1,9 @@
 import pandas as pd
 import random
 
-df = pd.read_csv('data/data.csv')
+input_file = 'data/data_recursive.csv'
+
+df = pd.read_csv(input_file)
 
 no_of_experiments = 500
 max_random_counties = 20
@@ -67,7 +69,6 @@ for i in range(no_of_experiments):
 	current_trial_df = last_good_df.copy()
 	random_rows = current_trial_df.sample(n = no_of_randomized_counties)
 
-	#The following starts after each omega test.
 	counties_done = []
 	for index, row in random_rows.iterrows():
 		current_county_id = row['county_id']
@@ -88,9 +89,7 @@ for i in range(no_of_experiments):
 			continue
 
 	populations, all_dems, all_reps, results = getPopulations(current_trial_df)
-	this_min = min(populations)
-	this_max = max(populations)
-	if ((this_min >= min_population) and (max(populations) <= max_population)):
+	if ((min(populations) >= min_population) and (max(populations) <= max_population)):
 		current_eg = getEfficiencyGap(populations, all_dems, all_reps, results)
 		print "Current Efficiency Gap: ", current_eg
 		if current_eg < last_good_eg:
@@ -105,5 +104,8 @@ for i in range(no_of_experiments):
 		# print "Min Populations", this_min, "Min allowed: ", min_population
 		# print "Max Populations", this_max, "Max allowed: ", max_population
 print "Best Efficiency Gap attained: ", last_good_eg
+
+
+last_good_df.to_csv(input_file, index = False)	
 last_good_df.to_csv('data/new_eg_'+str(last_good_eg)+'.csv', index = False)	
 	#update the last_good_df if consistent and gap decrease
