@@ -1,0 +1,1 @@
+whoever got changed, collect its neighbours and proceed to change and collect them in boxed. for each district id, if there exist two arrays, such that they are mutually exclusive. It but be a breakage in the system.
