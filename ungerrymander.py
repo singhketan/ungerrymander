@@ -22,7 +22,7 @@ def getPopulations(current_trial_df, ifPrint = False):
 	all_reps = []
 	results = []
 	sum = 0
-	for district in current_trial_df['district'].unique():
+	for district in sorted(current_trial_df['district'].unique()):
 		district_rows = current_trial_df[current_trial_df.district == district]
 		total_reps = (district_rows['rep']).sum()
 		total_dems = (district_rows['dem']).sum()
