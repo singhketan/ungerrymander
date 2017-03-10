@@ -21,6 +21,7 @@ def getPopulations(current_trial_df, ifPrint = False):
 	all_dems = []
 	all_reps = []
 	results = []
+	sum = 0
 	for district in current_trial_df['district'].unique():
 		district_rows = current_trial_df[current_trial_df.district == district]
 		total_reps = (district_rows['rep']).sum()
@@ -31,9 +32,14 @@ def getPopulations(current_trial_df, ifPrint = False):
 			results.append('dems')
 		else:
 			results.append('reps')
-		populations.append(total_reps + total_dems)
+			
+		district_population = total_reps + total_dems
+		sum += district_population
+		populations.append(district_population)
 		if ifPrint:
-			print "District ",district,": Democrates - ",total_dems,". Republicans - ",total_reps
+			print "District ",district,": Democrates - ",total_dems,". Republicans - ",total_reps, ". Total: ", district_population
+	if ifPrint:		
+		print "Total population: ", sum 
 
 	return populations, all_dems, all_reps, results
 	
